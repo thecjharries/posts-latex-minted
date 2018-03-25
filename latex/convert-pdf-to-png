@@ -1,0 +1,14 @@
+#!/bin/bash
+
+PDFS=($(find latex -type f -name '*.pdf'))
+for pdf in "${PDFS[@]}"; do
+    NEW_DIMS=$(
+        identify -verbose "$pdf" \
+            | awk -F':' '/Print size/{ \
+                    gsub(" ", "", $2); \
+                    split($2, results, /x/); \
+                    printf "%dx%d", 100*results[1], 100*results[2]; \
+                }'
+    )
+    convert -density 300 "$pdf" -resize "$NEW_DIMS" -background white -flatten "${pdf/pdf/png}"
+done
