@@ -1,0 +1,2 @@
+*.sublime*
+!posts-latex-minted.sublime-project
