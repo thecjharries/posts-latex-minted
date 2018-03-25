@@ -1,7 +1,135 @@
 {% extends 'base.md.j2' %}
 {% block lead %}
-Dunno
+This post serves as an introduce to `minted`, a `pygments`-based syntax highlighter for LaTeX. Adding `pygments` to LaTeX opens so much room for activities. The post provides a few examples of things you can do with `minted`, details the installation process, and covers some interesting issues.
 {% endblock %}
 {% block content %}
+## Overview
+
+## Installing
+
+`minted` requires a few things to get up and running.
+
+### Python
+
+You'll need Python to get started. Pygments [needs `>=2.6` or `>=3.3`](http://pygments.org/faq/#what-are-the-system-requirements), depending on your version of Python. You can lazily install both with any trouble. For example, via `dnf`,
+
+{{
+    shell_session('''
+$ sudo dnf install python{2,3}
+''')
+}}
+
+### `pip`
+
+Next you'll need `pip`, a wonderful package manager for Python. It's [ridiculously easy to install](https://github.com/pypa/get-pip#usage). Rather than install it globally (i.e. to `/usr/bin`), we're going to install it locally via the `--user` flag.
+
+{{
+    shell_session('''
+$ wget https://bootstrap.pypa.io/get-pip.py; python get-pip.py --user; rm get-pip.py
+This should be sufficient
+$ wget https://bootstrap.pypa.io/get-pip.py; python2 get-pip.py --user; rm get-pip.py
+This will install for Python 2 explicitly
+$ wget https://bootstrap.pypa.io/get-pip.py; python3 get-pip.py --user; rm get-pip.py
+This will install for Python 3 explicitly
+''')
+}}
+
+However, this doesn't put `pip` on our path.
+
+{{
+    shell_session('''
+$ which pip
+/usr/bin/which: no pip in (<path directories>)
+''')
+}}
+
+The `--user` flag installed `pip` to our [user site packages](https://docs.python.org/2.7/library/site.html#cmdoption-site-user-site). We can check the base directory, which should have the desired `bin`, via
+
+{{
+    shell_session('''
+$ python -m site --user-base
+~/.local
+''')
+}}
+
+Since we have an easy way to discover the directory, we have an easy way to add it to our `.whateverrc`:
+
+{{
+    shell_session('''
+$ echo \'export PATH="$(python -m site --user-base)/bin:$PATH"\' >> .whateverrc
+''')
+}}
+
+You can also manually add it, which might be a good idea if you're doing other `PATH` manipulations.
+
+### `pygments`
+
+With `pip` installed, we can quickly install `pygments`.
+
+{{
+    shell_session('''
+$ pip install --user pygments
+This should be sufficient
+$ pip2 install --user pygments
+This will install for Python 2 explicitly
+$ pip3 install --user pygments
+This will install for Python 3 explicitly
+''')
+}}
+
+### TeX Dependencies
+
+`minted` provides a [list of its dependencies](https://github.com/gpoore/minted/blob/master/source/minted.pdf). If you've got access to [something like `tlmgr`](http://tug.org/texlive/tlmgr.html), it should be pretty easy to update them.
+
+{{
+    highlight_block(
+        'keyval kvoptions fancyvrb fvextra upquote float ifthen calc ifplatform pdftexcmds etoolbox xstring xcolor lineno framed shellesc',
+        raw = 'keyval kvoptions fancyvrb fvextra upquote float ifthen calc ifplatform pdftexcmds etoolbox xstring xcolor lineno framed shellesc',
+        linenos = False,
+        explicit_lexer_name = 'TextLexer',
+        no_header = True
+    )
+}}
+
+If you don't (e.g. modern RHEL derivatives, I think), you'll have to get creative. This is the easiest route:
+
+{{
+    shell_session("""
+$ sudo dnf install 'texlive-*'
+...
+Install  >5779 Packages
+
+Total download size: >2.4 G
+Installed size: >3.8 G
+Is this ok [y/N]:
+""")
+}}
+
+If, like me, you're running an SSD on a budget, the easiest isn't very convenient. Maybe you just don't feel like warehousing all of TeX Live to snag 16 dependencies. If you're not going to install everything, you need to figure out what you have to install. `dnf`/`yum` makes this somewhat trivial. If you're stuck with `dpkg`/`dpkg-query`, the discovery will be [much more involved](https://tex.stackexchange.com/a/39776) (but also I think you can run `tlmgr` so there's that).
+
+{{
+    highlight_block(
+        'scripts/install-texlive-dependencies',
+        blob_path='scripts/install-texlive-dependencies',
+        linenos = True,
+        explicit_lexer_name = 'BashLexer',
+        title = 'install-texlive-dependencies',
+        external_source_link = "https://github.com/thecjharries/posts-latex-minted/blob/master/scripts/install-texlive-dependencies",
+    )
+}}
+
+### `minted`
+
+Convoluted dependency resolution aside, `minted` itself is a breeze to install (like `pygments`; we've already done all the hard work).
+
+{{
+    shell_session("""
+$ sudo dnf install texlive-minted
+""")
+}}
+
+## `-shell-escape`
+
+## `xe(la)tex` Tabs
 
 {% endblock %}
