@@ -1,13 +1,13 @@
 {% extends 'base.md.j2' %}
 {% block lead %}
-This post serves as an introduce to `minted`, a `pygments`-based syntax highlighter for LaTeX. Adding `pygments` to LaTeX streamlines so many things. The post provides a few examples of things you can do with `minted`, details the installation process, and covers some basic security.
+This post serves as an introduction to `minted`, a `pygments`-based syntax highlighter for LaTeX. Adding `pygments` to LaTeX streamlines so many things. The post provides a few examples of things you can do with `minted`, details the installation process, and covers some basic security.
 {% endblock %}
 {% block content %}
 ## Overview
 
 The easiest way to present code in LaTeX is to [use the `verbatim` environment](https://en.wikibooks.org/wiki/LaTeX/Paragraph_Formatting#Verbatim_text). It's quick, it preserves formatting, and it requires no set up. It's also very bland. Its ease of use comes at the cost of basically all the context clues well-formatted and styled code can provide.
 
-The next step up is [the `listings` package](https://en.wikibooks.org/wiki/LaTeX/Source_Code_Listings). Out the box, it supports a broad range of languages. It's eminently configurable. You can define new languages yourself, add different keywords, and style to your heart's content. It's very good at being straightforward. Moving beyond its predefined scopes (or [easily discoverable internet styles](https://www.google.com/search?q=listings+styles+latex)) is a challenge, though, because parsing and tokenizing code in LaTeX is just about as hard and ridiculous as it sounds.
+The next step up (or rather many steps up) is [the `listings` package](https://en.wikibooks.org/wiki/LaTeX/Source_Code_Listings). Out the box, it supports a broad range of languages. It's eminently configurable. You can define new languages yourself, add different keywords, and style to your heart's content. It's very good at being straightforward. Moving beyond its predefined scopes (or [easily discoverable internet styles](https://www.google.com/search?q=listings+styles+latex)) is a challenge, though, because parsing and tokenizing code in LaTeX is just about as hard and ridiculous as it sounds.
 
 `minted` has become [a solid competitor](https://github.com/gpoore/minted). It uses [the `pygments` project](http://pygments.org/) to parse and highlight. You've probably seen `pygments` in action [already](http://pygments.org/faq/#who-uses-pygments). It's a beast of an application that can do just about anything you want re: syntax highlighting. `minted` isn't quite as flexible, but it does have access to a broad range of `pygments` features. Recognizable styles, a massive library of lexers, and simple customization through Python make `minted`, by way of `pygments`, a veritable utility knife.
 
