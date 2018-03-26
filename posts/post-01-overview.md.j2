@@ -13,91 +13,9 @@ The next step up is [the `listings` package](https://en.wikibooks.org/wiki/LaTeX
 
 {{ highlight_latex('latex/overview/sample.tex') }}
 
-![sample-2](/content/images/2018/03/sample-2.png)
+![sample-3](/content/images/2018/03/sample-3.png)
 
 There's [a bit more to the `listings` vs. `minted` debate](https://tex.stackexchange.com/questions/389191/minted-vs-listings-pros-and-cons). Essentially it boils down to where you want to customize. Personally, I feel like a general-purpose scripting language used in all areas of tech is a stronger contender than a typesetting system many of my peers have struggled to learn. Don't get me wrong; I love TeX. I don't think tokenization in TeX is anywhere near as smooth as it is in almost any scripting language ever. I don't know, though (and if I'm wrong, I'd love to hear about it).
-
-`minted` makes it easy to include existing source code without worrying about getting it to play with your editor. The `\inputminted` macro lets you load any file while specifying the lexer.
-
-{{ highlight_latex('latex/overview/input.tex') }}
-
-![input](/content/images/2018/03/input.png)
-
-The default style is one of many available to `minted`. You can check the styles available on your system via
-{{
-    shell_session('''
-$ pygmentize -L styles
-Pygments version 2.2.0, (c) 2006-2017 by Georg Brandl.
-
-Styles:
-~~~~~~~
-* default:
-    The default style (inspired by Emacs 22).
-* emacs:
-    The default style (inspired by Emacs 22).
-* friendly:
-    A modern style based on the VIM pyte theme.
-* colorful:
-    A colorful style, inspired by CodeRay.
-* autumn:
-    A colorful style, inspired by the terminal highlighting style.
-* murphy:
-    Murphy\'s style from CodeRay.
-* manni:
-    A colorful style, inspired by the terminal highlighting style.
-* monokai:
-    This style mimics the Monokai color scheme.
-* perldoc:
-    Style similar to the style used in the perldoc code blocks.
-* pastie:
-    Style similar to the pastie default style.
-* borland:
-    Style similar to the style used in the borland IDEs.
-* trac:
-    Port of the default trac highlighter design.
-* native:
-    Pygments version of the "native" vim theme.
-* fruity:
-    Pygments version of the "native" vim theme.
-* bw:
-
-* vim:
-    Styles somewhat like vim 7.0
-* vs:
-
-* tango:
-    The Crunchy default Style inspired from the color palette from the Tango Icon Theme Guidelines.
-* rrt:
-    Minimalistic "rrt" theme, based on Zap and Emacs defaults.
-* xcode:
-    Style similar to the Xcode default colouring theme.
-* igor:
-    Pygments version of the official colors for Igor Pro procedures.
-* paraiso-light:
-
-* paraiso-dark:
-
-* lovelace:
-    The style used in Lovelace interactive learning environment. Tries to avoid the "angry fruit salad" effect with desaturated and dim colours.
-* algol:
-
-* algol_nu:
-
-* arduino:
-    The Arduino® language style. This style is designed to highlight the Arduino source code, so exepect the best results with it.
-* rainbow_dash:
-    A bright and colorful syntax highlighting theme.
-* abap:
-''')
-    }}
-
-You can preview any of the styles by [visiting the `pygments` demo](http://pygments.org/demo/) and trying out a highlighter. Once `pygments` has parsed the code, you'll be able to change the style at whim.
-
-The default styles alone add a tremendous amount of utility to `minted`.
-
-{{ highlight_latex('latex/overview/style.text') }}
-
-![style](/content/images/2018/03/styleF.png)
 
 ## Installing
 
@@ -317,5 +235,105 @@ Similarly, [in Sublime](https://www.sublimetext.com/) via [the LaTeXTools packag
         external_source_link = 'https://github.com/thecjharries/posts-latex-minted/blob/master/posts-latex-minted.sublime-project',
     )
 }}
+
+## Useful features
+
+You've already seen how simple it is to add code to a `tex` file. `minted` also makes it easy to include external source code without worrying about getting it to play well with your editor. The `\inputminted` macro lets you load any file while specifying the lexer.
+
+{{ highlight_latex('latex/overview/input.tex') }}
+
+![input](/content/images/2018/03/input.png)
+
+The default style is one of many available to `minted`. You can check the styles available on your system via
+{{
+    shell_session('''
+$ pygmentize -L styles
+Pygments version 2.2.0, (c) 2006-2017 by Georg Brandl.
+
+Styles:
+~~~~~~~
+* default:
+    The default style (inspired by Emacs 22).
+* emacs:
+    The default style (inspired by Emacs 22).
+* friendly:
+    A modern style based on the VIM pyte theme.
+* colorful:
+    A colorful style, inspired by CodeRay.
+* autumn:
+    A colorful style, inspired by the terminal highlighting style.
+* murphy:
+    Murphy\'s style from CodeRay.
+* manni:
+    A colorful style, inspired by the terminal highlighting style.
+* monokai:
+    This style mimics the Monokai color scheme.
+* perldoc:
+    Style similar to the style used in the perldoc code blocks.
+* pastie:
+    Style similar to the pastie default style.
+* borland:
+    Style similar to the style used in the borland IDEs.
+* trac:
+    Port of the default trac highlighter design.
+* native:
+    Pygments version of the "native" vim theme.
+* fruity:
+    Pygments version of the "native" vim theme.
+* bw:
+
+* vim:
+    Styles somewhat like vim 7.0
+* vs:
+
+* tango:
+    The Crunchy default Style inspired from the color palette from the Tango Icon Theme Guidelines.
+* rrt:
+    Minimalistic "rrt" theme, based on Zap and Emacs defaults.
+* xcode:
+    Style similar to the Xcode default colouring theme.
+* igor:
+    Pygments version of the official colors for Igor Pro procedures.
+* paraiso-light:
+
+* paraiso-dark:
+
+* lovelace:
+    The style used in Lovelace interactive learning environment. Tries to avoid the "angry fruit salad" effect with desaturated and dim colours.
+* algol:
+
+* algol_nu:
+
+* arduino:
+    The Arduino® language style. This style is designed to highlight the Arduino source code, so exepect the best results with it.
+* rainbow_dash:
+    A bright and colorful syntax highlighting theme.
+* abap:
+''')
+    }}
+
+You can preview any of the styles by [visiting the `pygments` demo](http://pygments.org/demo/) and trying out a highlighter. Once `pygments` has parsed the code, you'll be able to change the style at whim.
+
+The default styles alone add a tremendous amount of utility to `minted`.
+
+{{ highlight_latex('latex/overview/style.tex') }}
+
+![style](/content/images/2018/03/style.png)
+
+If you want to use the same style throughout your document, `minted` makes that simple too.
+
+{{ highlight_latex('latex/overview/newminted.tex') }}
+
+![newminted](/content/images/2018/03/newminted.png)
+
+You can use the same logic with `\inputminted` via `\newmintedfile`.
+
+{{ highlight_latex('latex/overview/newmintedfile.tex') }}
+
+![newmintedfile](/content/images/2018/03/newmintedfile.png)
+
+## What's Next
+
+Sometime very soon I hope to look explore `minted` in combination with some other tools to build on its features. I've got some examples in use right now but I need to break them out and annotate them.
 
 {% endblock %}
