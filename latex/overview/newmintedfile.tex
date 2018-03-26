@@ -1,0 +1,23 @@
+\documentclass{article}
+\usepackage[
+    paperwidth=6in,
+    paperheight=4in,
+    total={5.5in,3.9in}
+]{geometry}
+\usepackage{minted}
+\usepackage{xcolor}
+
+\setlength{\parindent}{0pt}
+
+\definecolor{mannibg}{HTML}{f0f3f3}
+
+\newmintedfile[bashcode]{bash}{
+    style=manni,
+    bgcolor=mannibg
+}
+
+\begin{document}
+\begin{center}
+\bashcode{../convert-pdf-to-png}
+\end{center}
+\end{document}

@@ -1,0 +1,49 @@
+\documentclass{article}
+% chktex-file 16
+% chktex-file 18
+% chktex-file 36
+\usepackage[
+    paperwidth=2.5in,
+    paperheight=3in,
+    total={2in,2.8in}
+]{geometry}
+\usepackage{minted}
+\usepackage{xcolor}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+\definecolor{monokaibg}{HTML}{272822}
+\definecolor{monokaifg}{rgb}{0.97,0.97,0.95}
+
+\newminted{bash}{
+    style=monokai,
+    bgcolor=monokaibg
+}
+
+\BeforeBeginEnvironment{bashcode}{\color{monokaifg}}
+\AfterEndEnvironment{bashcode}{\color{black}}
+
+\begin{document}
+\begin{center}
+\begin{bashcode}
+#!/bin/bash
+
+echo "Hello, world!"
+\end{bashcode}
+\hrule
+\begin{minted}{bash}
+#!/bin/bash
+
+echo "Hello, world!"
+\end{minted}
+\hrule
+\begin{bashcode}
+#!/bin/bash
+
+FOO=($(find . -type f))
+# Nothing's perfect
+echo "${FOO[@]}"
+\end{bashcode}
+\end{center}
+\end{document}

@@ -1,0 +1,46 @@
+\documentclass{article}
+% chktex-file 18
+\usepackage[
+    paperwidth=2.5in,
+    paperheight=3in,
+    total={2in,2.8in}
+]{geometry}
+\usepackage{listings}
+\usepackage{minted}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\begin{center}
+
+This is verbatim:
+
+\begin{verbatim}
+#!/bin/bash
+
+echo "Hello, world!"
+\end{verbatim}
+
+\hrule
+\vspace{6pt}
+
+This is vanilla {\ttfamily listings}:
+
+\begin{lstlisting}[language=Bash]
+#!/bin/bash
+
+echo "Hello, world!"
+\end{lstlisting}
+
+\hrule
+\vspace{6pt}
+
+This is vanilla {\ttfamily minted}:
+
+\begin{minted}{bash}
+#!/bin/bash
+
+echo "Hello, world!"
+\end{minted}
+\end{center}
+\end{document}
