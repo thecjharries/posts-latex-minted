@@ -1,0 +1,57 @@
+\documentclass{article}
+% chktex-file 18
+\usepackage[
+    paperwidth=2.5in,
+    paperheight=3in,
+    total={2in,2.8in}
+]{geometry}
+\usepackage{minted}
+\usepackage{xcolor}
+
+\setlength{\parindent}{0pt}
+
+\definecolor{monokaibg}{HTML}{272822}
+\definecolor{friendlybg}{HTML}{f0f0f0}
+
+\begin{document}
+\begin{center}
+
+This is the {\ttfamily monokai} style.
+
+\begin{minted}[
+    style=monokai,
+    bgcolor=monokaibg
+]{bash}
+#!/bin/bash
+
+echo "Hello, world!"
+\end{minted}
+
+\hrule
+\vspace{6pt}
+
+This is the {\ttfamily colorful} style.
+
+\begin{minted}[
+    style=colorful,
+]{bash}
+#!/bin/bash
+
+echo "Hello, world!"
+\end{minted}
+
+\hrule
+\vspace{6pt}
+
+This is the {\ttfamily friendly} style.
+
+\begin{minted}[
+    style=friendly,
+    bgcolor=friendlybg
+]{bash}
+#!/bin/bash
+
+echo "Hello, world!"
+\end{minted}
+\end{center}
+\end{document}

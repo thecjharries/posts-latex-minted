@@ -6,8 +6,8 @@
         blob_path=file_path,
         linenos = True,
         explicit_lexer_name = 'TexLexer',
-        title = {{ file_path | basename }},
-        external_source_link = "https://github.com/thecjharries/posts-latex-minted/blob/master/{{ filename }}",
+        title = file_path | basename,
+        external_source_link = "https://github.com/thecjharries/posts-latex-minted/blob/master/%s" % file_path,
     )
 }}
 
