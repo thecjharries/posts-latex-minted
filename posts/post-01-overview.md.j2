@@ -1,0 +1,339 @@
+{% extends 'base.md.j2' %}
+{% block lead %}
+This post serves as an introduction to `minted`, a `pygments`-based syntax highlighter for LaTeX. Adding `pygments` to LaTeX streamlines so many things. The post provides a few examples of things you can do with `minted`, details the installation process, and covers some basic security.
+{% endblock %}
+{% block content %}
+## Overview
+
+The easiest way to present code in LaTeX is to [use the `verbatim` environment](https://en.wikibooks.org/wiki/LaTeX/Paragraph_Formatting#Verbatim_text). It's quick, it preserves formatting, and it requires no set up. It's also very bland. Its ease of use comes at the cost of basically all the context clues well-formatted and styled code can provide.
+
+The next step up (or rather many steps up) is [the `listings` package](https://en.wikibooks.org/wiki/LaTeX/Source_Code_Listings). Out the box, it supports a broad range of languages. It's eminently configurable. You can define new languages yourself, add different keywords, and style to your heart's content. It's very good at being straightforward. Moving beyond its predefined scopes (or [easily discoverable internet styles](https://www.google.com/search?q=listings+styles+latex)) is a challenge, though, because parsing and tokenizing code in LaTeX is just about as hard and ridiculous as it sounds.
+
+`minted` has become [a solid competitor](https://github.com/gpoore/minted). It uses [the `pygments` project](http://pygments.org/) to parse and highlight. You've probably seen `pygments` in action [already](http://pygments.org/faq/#who-uses-pygments). It's a beast of an application that can do just about anything you want re: syntax highlighting. `minted` isn't quite as flexible, but it does have access to most of the `pygments` features. Recognizable styles, a massive library of lexers, and simple customization through Python make `minted`, by way of `pygments`, a veritable utility knife.
+
+{{ highlight_latex('latex/overview/sample.tex') }}
+
+![sample-3](/content/images/2018/03/sample-3.png)
+
+There's [a bit more to the `listings` vs. `minted` debate](https://tex.stackexchange.com/questions/389191/minted-vs-listings-pros-and-cons). Essentially it boils down to where you want to customize. Personally, I feel like a general-purpose scripting language used in all areas of tech is a stronger contender than a typesetting system many of my peers have struggled to learn. I don't know, though (and if I'm wrong, I'd love to hear about it). At its core, TeX tokenizes everything. I'm just not sure that it can achieve the same level of regex wizardry that goes into some of the `pygments` code.
+
+## Installing
+
+`minted` requires a few things to get up and running.
+
+### Python
+
+You'll need Python to get started. Pygments [needs `>=2.6` or `>=3.3`](http://pygments.org/faq/#what-are-the-system-requirements), depending on your version of Python. You can lazily install both with any trouble. For example, via `dnf`,
+
+{{
+    shell_session('''
+$ sudo dnf install python{2,3}
+''')
+}}
+
+### `pip`
+
+Next you'll need `pip`, a wonderful package manager for Python. It's [ridiculously easy to install](https://github.com/pypa/get-pip#usage). Rather than install it globally (i.e. to `/usr/bin`), we're going to install it locally via the `--user` flag.
+
+{{
+    shell_session('''
+$ wget https://bootstrap.pypa.io/get-pip.py; python get-pip.py --user; rm get-pip.py
+This should be sufficient
+$ wget https://bootstrap.pypa.io/get-pip.py; python2 get-pip.py --user; rm get-pip.py
+This will install for Python 2 explicitly
+$ wget https://bootstrap.pypa.io/get-pip.py; python3 get-pip.py --user; rm get-pip.py
+This will install for Python 3 explicitly
+''')
+}}
+
+However, this doesn't put `pip` on our path.
+
+{{
+    shell_session('''
+$ which pip
+/usr/bin/which: no pip in (<path directories>)
+''')
+}}
+
+The `--user` flag installed `pip` to our [user site packages](https://docs.python.org/2.7/library/site.html#cmdoption-site-user-site). We can check the base directory, which should have the desired `bin`, via
+
+{{
+    shell_session('''
+$ python -m site --user-base
+~/.local
+''')
+}}
+
+Since we have an easy way to discover the directory, we have an easy way to add it to our `.whateverrc`:
+
+{{
+    shell_session('''
+$ echo \'export PATH="$(python -m site --user-base)/bin:$PATH"\' >> .whateverrc
+''')
+}}
+
+You can also manually add it, which might be a good idea if you're doing other `PATH` manipulations.
+
+### `pygments`
+
+With `pip` installed, we can quickly install `pygments`.
+
+{{
+    shell_session("""
+$ pip install --user pygments
+This should be sufficient
+$ pip2 install --user pygments
+This will install for Python 2 explicitly
+$ pip3 install --user pygments
+This will install for Python 3 explicitly
+
+Installing both isn't necessary. As of writing, Pygments is compatible with
+both major versions of Python.
+""")
+}}
+
+### TeX Dependencies
+
+`minted` provides a [list of its dependencies](https://github.com/gpoore/minted/blob/master/source/minted.pdf). If you've got access to [something like `tlmgr`](http://tug.org/texlive/tlmgr.html), it should be pretty easy to update them.
+
+{{
+    highlight_block(
+        'keyval kvoptions fancyvrb fvextra upquote float ifthen calc ifplatform pdftexcmds etoolbox xstring xcolor lineno framed shellesc',
+        raw = 'keyval kvoptions fancyvrb fvextra upquote float ifthen calc ifplatform pdftexcmds etoolbox xstring xcolor lineno framed shellesc',
+        linenos = False,
+        explicit_lexer_name = 'TextLexer',
+        no_header = True
+    )
+}}
+
+If you don't (e.g. modern RHEL derivatives, I think), you'll have to get creative. This is the easiest route:
+
+{{
+    shell_session("""
+$ sudo dnf install 'texlive-*'
+...
+Install  >5779 Packages
+
+Total download size: >2.4 G
+Installed size: >3.8 G
+Is this ok [y/N]:
+""")
+}}
+
+If, like me, you're running an SSD on a budget, the easiest isn't very convenient. Maybe you just don't feel like warehousing all of TeX Live to snag 16 dependencies. If you're not going to install everything, you need to figure out what you have to install. `dnf`/`yum` makes this somewhat trivial. If you're stuck with `dpkg`/`dpkg-query`, the discovery will be [much more involved](https://tex.stackexchange.com/a/39776) (but also I think you can run `tlmgr` so there's that).
+
+{{
+    highlight_block(
+        'scripts/install-texlive-dependencies',
+        blob_path='scripts/install-texlive-dependencies',
+        linenos = True,
+        explicit_lexer_name = 'BashLexer',
+        title = 'install-texlive-dependencies',
+        external_source_link = "https://github.com/thecjharries/posts-latex-minted/blob/master/scripts/install-texlive-dependencies",
+    )
+}}
+
+### `minted`
+
+Convoluted dependency resolution aside, `minted` itself is a breeze to install (like `pygments`; we've already done all the hard work).
+
+{{
+    shell_session("""
+$ sudo dnf install texlive-minted
+""")
+}}
+
+## `-shell-escape`
+
+Because `minted` relies on an external application (`pygments`) to highlight, it can't just run in a tiny, neatly contained environment. TeX [essentially exposes streams](http://www.tex.ac.uk/FAQ-spawnprog.html) but, by default, access to the operating system is locked down. `-shell-escape` neatly sidesteps those restrictions, but it doesn't come without risk. Just like anything else, it's probably not a great idea to provide shell access until you understand what's going on. Don't download random things off the internet and execute them blindly. Don't run in superuser mode all the time. You know, basic stuff.
+
+This is what happens when you try to run `minted` without `-shell-escape`. Notice at the beginning that external actions are limited (`restricted \write18 enabled`). The document will not compile (even without `-halt-on-error`).
+
+{{
+    shell_session("""
+$ pdflatex -interaction=nonstopmode -halt-on-error sample.tex
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./sample.tex
+LaTeX2e <2016/03/31>
+...
+
+Package ifplatform Warning:
+    shell escape is disabled, so I can only detect \ifwindows.
+
+...
+
+! Package minted Error: You must invoke LaTeX with the -shell-escape flag.
+
+See the minted package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...
+
+l.9
+
+!  ==> Fatal error occurred, no output PDF file produced!
+Transcript written on sample.log.
+""")
+}}
+
+With `-shell-escape`, any external action is available (`\write18 enabled`) and the document compiles.
+
+{{
+    shell_session("""
+$ pdflatex -interaction=nonstopmode -halt-on-error -shell-escape sample.tex
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex)
+ \write18 enabled.
+entering extended mode
+(./sample.tex
+LaTeX2e <2016/03/31>
+...
+Output written on sample.pdf (1 page, 48380 bytes).
+Transcript written on sample.log.
+""")
+}}
+
+Chances are you're not actually building from the CLI every time. You've probably got an editor with some build commands stored. Don't add `-shell-escape` to all of your build profiles. It's a pain to toggle custom builds off and on, but having to rebuild your system after an attack is worse. Look for something like User Builds, Custom Commands, or the like.
+
+For example, [in TeXstudio](https://www.texstudio.org/), you can add custom builds via Configure TeXstudio > Builds > User Commands. [In Texmaker](http://www.xm1math.net/texmaker/), the same menu is available via User > User Commands > Edit User Commands.
+
+Similarly, [in Sublime](https://www.sublimetext.com/) via [the LaTeXTools package](https://github.com/SublimeText/LaTeXTools), you can add custom builds to your project file (or anywhere else, for that matter).
+
+{{
+    highlight_block(
+        '''
+{
+  "folders":
+  [
+    {
+      "path": "."
+    }
+  ],
+  "build_systems":
+  [
+    {
+      "name": "Escalated pdflatex",
+      "target": "make_pdf",
+      "selector": "text.tex.latex",
+      "builder": "script",
+      "script_commands": [
+        [
+          "pdflatex",
+          "-synctex=1",
+          "-interaction=nonstopmode",
+          "-shell-escape",
+          "$file_base_name"
+        ]
+      ]
+    }
+  ]
+}
+''',
+        linenos = True,
+        explicit_lexer_name = 'JsonLexer',
+        title = 'posts-latex-minted.sublime-project',
+        external_source_link = 'https://github.com/thecjharries/posts-latex-minted/blob/master/posts-latex-minted.sublime-project',
+    )
+}}
+
+## Useful features
+
+You've already seen how simple it is to add code to a `tex` file. `minted` also makes it easy to include external source code without worrying about getting it to play well with your editor. The `\inputminted` macro lets you load any file while specifying the lexer.
+
+{{ highlight_latex('latex/overview/input.tex') }}
+
+![input](/content/images/2018/03/input.png)
+
+The default style is one of many available to `minted`. You can check the styles available on your system via
+{{
+    shell_session('''
+$ pygmentize -L styles
+Pygments version 2.2.0, (c) 2006-2017 by Georg Brandl.
+
+Styles:
+~~~~~~~
+* default:
+    The default style (inspired by Emacs 22).
+* emacs:
+    The default style (inspired by Emacs 22).
+* friendly:
+    A modern style based on the VIM pyte theme.
+* colorful:
+    A colorful style, inspired by CodeRay.
+* autumn:
+    A colorful style, inspired by the terminal highlighting style.
+* murphy:
+    Murphy\'s style from CodeRay.
+* manni:
+    A colorful style, inspired by the terminal highlighting style.
+* monokai:
+    This style mimics the Monokai color scheme.
+* perldoc:
+    Style similar to the style used in the perldoc code blocks.
+* pastie:
+    Style similar to the pastie default style.
+* borland:
+    Style similar to the style used in the borland IDEs.
+* trac:
+    Port of the default trac highlighter design.
+* native:
+    Pygments version of the "native" vim theme.
+* fruity:
+    Pygments version of the "native" vim theme.
+* bw:
+
+* vim:
+    Styles somewhat like vim 7.0
+* vs:
+
+* tango:
+    The Crunchy default Style inspired from the color palette from the Tango Icon Theme Guidelines.
+* rrt:
+    Minimalistic "rrt" theme, based on Zap and Emacs defaults.
+* xcode:
+    Style similar to the Xcode default colouring theme.
+* igor:
+    Pygments version of the official colors for Igor Pro procedures.
+* paraiso-light:
+
+* paraiso-dark:
+
+* lovelace:
+    The style used in Lovelace interactive learning environment. Tries to avoid the "angry fruit salad" effect with desaturated and dim colours.
+* algol:
+
+* algol_nu:
+
+* arduino:
+    The Arduino® language style. This style is designed to highlight the Arduino source code, so exepect the best results with it.
+* rainbow_dash:
+    A bright and colorful syntax highlighting theme.
+* abap:
+''')
+    }}
+
+You can preview any of the styles by [visiting the `pygments` demo](http://pygments.org/demo/) and trying out a highlighter. Once `pygments` has parsed the code, you'll be able to change the style at whim.
+
+The default styles alone add a tremendous amount of utility to `minted`. There are [many other settings that may be tweaked](https://github.com/gpoore/minted/blob/master/source/minted.pdf). Sharing style changes is an easy way to underscore `minted`'s versatility.
+
+{{ highlight_latex('latex/overview/style.tex') }}
+
+![style](/content/images/2018/03/style.png)
+
+If you want to use the same style throughout your document, `minted` makes that simple too. The `\newminted` macro defines a configuration for a specific language, e.g. `python`. It can then be used as an environment in place of `minted` by appending `code` to the end, e.g. `pythoncode`.
+
+{{ highlight_latex('latex/overview/newminted.tex') }}
+
+![newminted](/content/images/2018/03/newminted.png)
+
+You can use the same logic with `\inputminted` via `\newmintedfile`. Rather than defining a new environment, `\newmintedfile` creates a new macro. It has an optional name parameter to make things easier (otherwise the macro is called `\<language>file`).
+
+{{ highlight_latex('latex/overview/newmintedfile.tex') }}
+
+![newmintedfile](/content/images/2018/03/newmintedfile.png)
+
+## What's Next
+
+Sometime very soon I hope to look explore `minted` in combination with some other tools to build on its features. I've got some examples in use right now but I need to break them out and annotate them.
+
+{% endblock %}

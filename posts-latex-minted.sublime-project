@@ -4,5 +4,36 @@
 		{
 			"path": "."
 		}
-	]
+	],
+    "build_systems":
+    [
+        {
+            "selector": "source.python",
+            "name": "Python: run",
+            "working_dir": "${project_path}",
+            "cmd": ["python", "-u", "$file"]
+        },
+        {
+            "selector": "source.jinja2",
+            "name": "Compile all posts",
+            "working_dir": "${project_path}",
+            "cmd": ["python", "-u", "compiler.py"]
+        },
+        {
+            "name": "Escalated pdflatex",
+            "target": "make_pdf",
+            "selector": "text.tex.latex",
+            "builder": "script",
+            "script_commands": [
+                [
+                    "xelatex",
+                    "-8bit",
+                    "-synctex=1",
+                    "-interaction=nonstopmode",
+                    "-shell-escape",
+                    "$file_base_name"
+                ]
+            ]
+        }
+    ]
 }

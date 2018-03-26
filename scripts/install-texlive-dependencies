@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Pulled from https://github.com/gpoore/minted/blob/master/source/minted.pdf
+DEPENDENCIES=(
+    keyval
+    kvoptions
+    fancyvrb
+    fvextra
+    upquote
+    float
+    ifthen
+    calc
+    ifplatform
+    pdftexcmds
+    etoolbox
+    xstring
+    xcolor
+    lineno
+    framed
+    shellesc
+)
+PACKAGES=()
+# Loop over all the dependencies
+for dependency in "${DEPENDENCIES[@]}"; do
+    # Check dnf for the parent package and trim its output
+    PACKAGES+=($(
+        dnf provides "tex($dependency.sty)" \
+            | awk -F':' '/^texlive/{ gsub("-[0-9]+$", "", $1); print $1 }'
+    ))
+done
+# Remove duplicates
+PACKAGES=($(echo "${PACKAGES[@]}" | tr ' ' '\n' | sort -u))
+# Install dependencies
+sudo dnf install "${PACKAGES[@]}"
