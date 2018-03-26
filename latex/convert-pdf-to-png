@@ -1,7 +1,9 @@
 #!/bin/bash
 
+# Find all pdfs
 PDFS=($(find latex -type f -name '*.pdf'))
 for pdf in "${PDFS[@]}"; do
+    # Parse their dimensions
     NEW_DIMS=$(
         identify -verbose "$pdf" \
             | awk -F':' '/Print size/{ \
@@ -10,5 +12,12 @@ for pdf in "${PDFS[@]}"; do
                     printf "%dx%d", 150*results[1], 150*results[2]; \
                 }'
     )
-    convert -density 300 "$pdf" -resize "$NEW_DIMS" -background white -flatten "${pdf/pdf/png}"
+    # Create a png copy
+    convert \
+        -density 300 \
+        "$pdf" \
+        -resize "$NEW_DIMS" \
+        -background white \
+        -flatten \
+        "${pdf/pdf/png}"
 done
