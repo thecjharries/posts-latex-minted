@@ -26,7 +26,8 @@
             "builder": "script",
             "script_commands": [
                 [
-                    "pdflatex",
+                    "xelatex",
+                    "-8bit",
                     "-synctex=1",
                     "-interaction=nonstopmode",
                     "-shell-escape",
