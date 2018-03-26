@@ -145,6 +145,95 @@ $ sudo dnf install texlive-minted
 
 ## `-shell-escape`
 
-## `xe(la)tex` Tabs
+Because `minted` relies on external applications (`pygments`) to highlight, it can't just run in a tiny, neatly contained environment. TeX [essentially exposes streams](http://www.tex.ac.uk/FAQ-spawnprog.html) but, by default, access to the operating system is locked down. `-shell-escape` neatly sidesteps those restrictions, but it doesn't come without risk. Just like anything else, it's probably not a great idea to provide shell access until you understand what's going on. Don't download random things off the internet and execute them blindly. Don't run in superuser mode all the time. You know, basic stuff.
+
+This is what happens when you try to run `minted` without `-shell-escape`. Notice at the beginning that external actions are limited (`restricted \write18 enabled`). The document will not compile (even without `-halt-on-error`).
+
+{{
+    shell_session("""
+$ pdflatex -interaction=nonstopmode -halt-on-error sample.tex
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./sample.tex
+LaTeX2e <2016/03/31>
+...
+
+Package ifplatform Warning:
+    shell escape is disabled, so I can only detect \ifwindows.
+
+...
+
+! Package minted Error: You must invoke LaTeX with the -shell-escape flag.
+
+See the minted package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...
+
+l.9
+
+!  ==> Fatal error occurred, no output PDF file produced!
+Transcript written on sample.log.
+""")
+}}
+
+With `-shell-escape`, any external action is available (`\write18 enabled`) and the document compiles.
+
+{{
+    shell_session("""
+$ pdflatex -interaction=nonstopmode -halt-on-error -shell-escape sample.tex
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex)
+ \write18 enabled.
+entering extended mode
+(./sample.tex
+LaTeX2e <2016/03/31>
+...
+Output written on sample.pdf (1 page, 48380 bytes).
+Transcript written on sample.log.
+""")
+}}
+
+Chances are you're not actually building from the CLI every time. You've probably got an editor with some build commands stored. Don't add `-shell-escape` to all of your build profiles. It's a pain to toggle custom builds off and on, but having to rebuild your system after an attack is worse. Look for something like User Builds, Custom Commands, or the like.
+
+For example, [in TeXstudio](https://www.texstudio.org/), you can add custom builds via Configure TeXstudio > Builds > User Commands. [In Texmaker](http://www.xm1math.net/texmaker/), the same menu is available via User > User Commands > Edit User Commands.
+
+Similarly, [in Sublime](https://www.sublimetext.com/) via [the LaTeXTools package](https://github.com/SublimeText/LaTeXTools), you can add custom builds to your project file (or anywhere else, for that matter).
+
+{{
+    highlight_block(
+        '''
+{
+  "folders":
+  [
+    {
+      "path": "."
+    }
+  ],
+  "build_systems":
+  [
+    {
+      "name": "Escalated pdflatex",
+      "target": "make_pdf",
+      "selector": "text.tex.latex",
+      "builder": "script",
+      "script_commands": [
+        [
+          "pdflatex",
+          "-synctex=1",
+          "-interaction=nonstopmode",
+          "-shell-escape",
+          "$file_base_name"
+        ]
+      ]
+    }
+  ]
+}
+''',
+        linenos = True,
+        explicit_lexer_name = 'JsonLexer',
+        title = 'posts-latex-minted.sublime-project',
+        external_source_link = 'https://github.com/thecjharries/posts-latex-minted/blob/master/posts-latex-minted.sublime-project',
+    )
+}}
 
 {% endblock %}
