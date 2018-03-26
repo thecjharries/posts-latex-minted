@@ -320,13 +320,13 @@ The default styles alone add a tremendous amount of utility to `minted`.
 
 ![style](/content/images/2018/03/style.png)
 
-If you want to use the same style throughout your document, `minted` makes that simple too.
+If you want to use the same style throughout your document, `minted` makes that simple too. The `\newminted` macro defines a configuration for a specific language, e.g. `python`. It can then be used as an environment in place of `minted` by appending `code` to the end, e.g. `pythoncode`.
 
 {{ highlight_latex('latex/overview/newminted.tex') }}
 
 ![newminted](/content/images/2018/03/newminted.png)
 
-You can use the same logic with `\inputminted` via `\newmintedfile`.
+You can use the same logic with `\inputminted` via `\newmintedfile`. Rather than defining a new environment, `\newmintedfile` creates a new macro. It has an optional name parameter to make things easier (otherwise the macro is called `\<language>file`).
 
 {{ highlight_latex('latex/overview/newmintedfile.tex') }}
 
