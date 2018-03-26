@@ -145,7 +145,7 @@ $ sudo dnf install texlive-minted
 
 ## `-shell-escape`
 
-Because `minted` relies on external applications (`pygments`) to highlight, it can't just run in a tiny, neatly contained environment. TeX [essentially exposes streams](http://www.tex.ac.uk/FAQ-spawnprog.html) but, by default, access to the operating system is locked down. `-shell-escape` neatly sidesteps those restrictions, but it doesn't come without risk. Just like anything else, it's probably not a great idea to provide shell access until you understand what's going on. Don't download random things off the internet and execute them blindly. Don't run in superuser mode all the time. You know, basic stuff.
+Because `minted` relies on an external application (`pygments`) to highlight, it can't just run in a tiny, neatly contained environment. TeX [essentially exposes streams](http://www.tex.ac.uk/FAQ-spawnprog.html) but, by default, access to the operating system is locked down. `-shell-escape` neatly sidesteps those restrictions, but it doesn't come without risk. Just like anything else, it's probably not a great idea to provide shell access until you understand what's going on. Don't download random things off the internet and execute them blindly. Don't run in superuser mode all the time. You know, basic stuff.
 
 This is what happens when you try to run `minted` without `-shell-escape`. Notice at the beginning that external actions are limited (`restricted \write18 enabled`). The document will not compile (even without `-halt-on-error`).
 
